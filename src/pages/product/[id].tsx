@@ -7,8 +7,6 @@ import React from "react";
 import { Product } from "@/types";
 
 const ProductPage = ({ product }: { product: Product }) => {
-  console.log(product);
-
   return (
     <div className="scroll-smooth max-w-[1324px] w-full m-auto items-start pt-5 pb-10 flex flex-col gap-10 md2:pr-8">
       <div className="flex flex-col gap-10 md:gap-6 w-full">

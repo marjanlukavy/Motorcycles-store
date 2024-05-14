@@ -1,8 +1,21 @@
+import useCartStore from "@/store/useCartStore";
 import { Product } from "@/types";
 import React from "react";
 import { CiShoppingCart } from "react-icons/ci";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 const ProductSummaryCard = ({ product }: { product: Product }) => {
+  const { items, addItem, incrementItem, decrementItem } = useCartStore(
+    (state) => ({
+      items: state.items,
+      addItem: state.addItem,
+      incrementItem: state.incrementItem,
+      decrementItem: state.decrementItem,
+    })
+  );
+
+  const cartItem = items.find((item) => item.id === product.id);
+
   return (
     <div
       className="flex flex-col gap-3 border-b pb-3 border-gray"
@@ -19,10 +32,32 @@ const ProductSummaryCard = ({ product }: { product: Product }) => {
             {product.price} UAH
           </span>
         </div>
-        <button className="bg-blue text-white px-6 py-3 rounded-lg hover:bg-blue transition duration-300 flex items-center gap-2">
-          <span>Add to Cart</span>
-          <CiShoppingCart size={25} />
-        </button>
+
+        {cartItem ? (
+          <div className="flex items-center justify-between">
+            <button
+              className="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+              onClick={() => decrementItem(product.id)}
+            >
+              <FaMinus />
+            </button>
+            <span className="font-medium text-lg">{cartItem.quantity}</span>
+            <button
+              className="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+              onClick={() => incrementItem(product.id)}
+            >
+              <FaPlus />
+            </button>
+          </div>
+        ) : (
+          <button
+            className="mt-auto flex items-center gap-2 bg-black text-white hover:text-black px-4 py-2 rounded-lg hover:bg-gray transition-colors duration-300"
+            onClick={() => addItem(product)}
+          >
+            Добавити в корзину
+            <CiShoppingCart size={25} />
+          </button>
+        )}
       </div>
       <div className="flex items-end justify-between"></div>
     </div>
