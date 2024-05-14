@@ -80,7 +80,7 @@ const ManageProducts = () => {
                   className="rounded-full object-cover"
                 />
               </div>
-              <div>
+              <div className="flex flex-col items-baseline">
                 <h3 className="text-lg font-semibold text-gray-900">
                   {users[order.userId]?.name || "Unknown User"}
                 </h3>
@@ -91,6 +91,7 @@ const ManageProducts = () => {
                     statusColors[order?.status] || "bg-gray-100 text-gray-800"
                   } rounded-full px-2 py-1`}
                 >
+                  Status:{" "}
                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                 </p>
               </div>
