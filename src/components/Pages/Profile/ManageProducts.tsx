@@ -93,9 +93,6 @@ const ManageProducts = () => {
                 >
                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                 </p>
-                <p className="text-gray-600">
-                  Created At: {new Date(order.createdAt).toLocaleString()}
-                </p>
               </div>
             </div>
             <div className="flex flex-col space-y-4 w-full md:w-auto">
