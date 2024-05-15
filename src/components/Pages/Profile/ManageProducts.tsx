@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "@/utils/firebase/config";
 import Image from "next/image";
 
@@ -9,6 +16,8 @@ interface Order {
   userId: string;
   createdAt: string;
   status: string;
+  name: string;
+  phoneNumber: string;
 }
 
 interface User {
@@ -18,10 +27,10 @@ interface User {
   profilePicture: string;
 }
 
-const statusColors: any = {
-  pending: "bg-yellow-100 text-yellow-800",
-  completed: "bg-green-100 text-green-800",
-  cancelled: "bg-red-100 text-red-800",
+const statusColors: { [key: string]: string } = {
+  waiting: "bg-yellow-100 text-yellow-800",
+  pending: "bg-orange-100 text-orange-800",
+  selled: "bg-green-100 text-green-800",
 };
 
 const ManageProducts = () => {
@@ -57,12 +66,38 @@ const ManageProducts = () => {
     fetchOrdersAndUsers();
   }, []);
 
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      const orderDocRef = doc(db, "orders", orderId);
+      await updateDoc(orderDocRef, { status: newStatus });
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+    } catch (error) {
+      console.error("Error updating order status: ", error);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      const orderDocRef = doc(db, "orders", orderId);
+      await deleteDoc(orderDocRef);
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => order.id !== orderId)
+      );
+    } catch (error) {
+      console.error("Error deleting order: ", error);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {orders.length === 0 ? (
         <p className="text-gray-600">No orders found.</p>
       ) : (
-        orders.map((order: any) => (
+        orders.map((order) => (
           <div
             key={order.id}
             className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white rounded-lg shadow-md space-y-4 md:space-y-0 md:space-x-4"
@@ -85,19 +120,24 @@ const ManageProducts = () => {
                   {users[order.userId]?.name || "Unknown User"}
                 </h3>
                 <p className="text-gray-600">{users[order.userId]?.email}</p>
+                <p className="text-gray-600">Phone: {order.phoneNumber}</p>
                 <p className="text-gray-600">Order ID: {order.id}</p>
                 <p
                   className={`text-sm font-medium ${
-                    statusColors[order?.status] || "bg-gray-100 text-gray-800"
+                    statusColors[order.status] || "bg-gray-100 text-gray-800"
                   } rounded-full px-2 py-1`}
                 >
                   Status:{" "}
-                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                  {order.status === "waiting"
+                    ? "Очікування продавця"
+                    : order.status === "pending"
+                    ? "Замовлення в обробці"
+                    : "Продано"}
                 </p>
               </div>
             </div>
             <div className="flex flex-col space-y-4 w-full md:w-auto">
-              {order.items.map((item: any, index: any) => (
+              {order.items.map((item, index) => (
                 <div
                   key={index}
                   className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg shadow-sm"
@@ -116,6 +156,23 @@ const ManageProducts = () => {
                   </div>
                 </div>
               ))}
+            </div>
+            <div className="flex space-x-2">
+              <select
+                value={order.status}
+                onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                className="p-2 border border-gray-300 rounded-lg"
+              >
+                <option value="waiting">Очікування продавця</option>
+                <option value="pending">Замовлення в обробці</option>
+                <option value="selled">Продано</option>
+              </select>
+              <button
+                onClick={() => handleDeleteOrder(order.id)}
+                className="text-red-500 hover:text-red-700 transition"
+              >
+                Видалити
+              </button>
             </div>
           </div>
         ))

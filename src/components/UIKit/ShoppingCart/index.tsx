@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,29 +30,41 @@ const ShoppingCart = () => {
 
   const user = useUser((state) => state.user);
 
-  const handleCheckout = async () => {
-    try {
-      if (!user) {
-        toast.error("Please sign in to checkout.");
-        return;
-      }
+  const [showForm, setShowForm] = useState(false);
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
+  const handleCheckout = () => {
+    if (!user) {
+      toast.error("Please sign in to checkout.");
+      return;
+    }
+    setShowForm(true);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
       const order = {
-        userId: user.uid, // Include user ID in the order
+        userId: user?.uid,
         items,
+        name,
+        phoneNumber,
         createdAt: new Date(),
         status: "pending",
       };
+      toast.success("Очікуйте, з вами скоро зв'яжаться!", { autoClose: 1000 });
       await addDoc(collection(db, "orders"), order);
       clearCart();
-      toast.success("Order placed successfully!");
+      setShowForm(false);
     } catch (error) {
       console.error("Error adding order: ", error);
       toast.error("Failed to place the order. Please try again.");
     }
   };
 
-  if (items.length === 0) return null;
+  // if (items.length === 0) return null;
 
   return (
     <Drawer>
@@ -68,66 +80,91 @@ const ShoppingCart = () => {
       <DrawerContent className="p-6 bg-gray">
         <DrawerHeader>
           <DrawerTitle className="text-2xl font-bold">
-            Shopping Cart
+            {items.length > 0 ? "Кошик" : "Кошик порожній"}
           </DrawerTitle>
         </DrawerHeader>
         <div className="flex flex-col space-y-4 h-[300px] overflow-auto">
-          {items.length === 0 ? (
-            <p className="text-gray-600">Your cart is empty.</p>
-          ) : (
-            items.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
-              >
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="w-16 h-16 object-cover rounded-lg"
-                  />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-700">${item.price}</p>
-                  </div>
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+            >
+              <div className="flex items-center space-x-4">
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="w-16 h-16 object-cover rounded-lg"
+                />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-700">${item.price}</p>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => decrementItem(item.id)}
-                    className="px-2 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-                  >
-                    -
-                  </button>
-                  <span className="font-semibold text-gray-900">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => incrementItem(item.id)}
-                    className="px-2 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-                  >
-                    +
-                  </button>
-                </div>
+              </div>
+              <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => removeItem(item.id)}
-                  className="text-red-500 hover:text-red-700 transition"
+                  onClick={() => decrementItem(item.id)}
+                  className="px-2 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
                 >
-                  <FaTrash />
+                  -
+                </button>
+                <span className="font-semibold text-gray-900">
+                  {item.quantity}
+                </span>
+                <button
+                  onClick={() => incrementItem(item.id)}
+                  className="px-2 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                >
+                  +
                 </button>
               </div>
-            ))
-          )}
+              <button
+                onClick={() => removeItem(item.id)}
+                className="text-red-500 hover:text-red-700 transition"
+              >
+                <FaTrash />
+              </button>
+            </div>
+          ))}
         </div>
-        <DrawerFooter className="flex justify-end mt-6">
-          <button
-            onClick={handleCheckout}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300"
-          >
-            Checkout
-          </button>
-        </DrawerFooter>
+        {items.length > 0 ? (
+          <DrawerFooter className="flex justify-end mt-6">
+            {showForm ? (
+              <form
+                onSubmit={handleFormSubmit}
+                className="w-full flex flex-col space-y-4"
+              >
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your name"
+                  className="p-2 border border-gray-300 rounded-lg"
+                  required
+                />
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Enter your phone number"
+                  className="p-2 border border-gray-300 rounded-lg"
+                  required
+                />
+                <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300">
+                  Complete Order
+                </button>
+              </form>
+            ) : (
+              <button
+                onClick={handleCheckout}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300"
+              >
+                Checkout
+              </button>
+            )}
+          </DrawerFooter>
+        ) : null}
         <DrawerClose className="ml-4 absolute right-6">
           <button className="bg-red-500 text-white px-2 py-2 rounded-lg hover:bg-red-600 transition duration-300">
             <RxCrossCircled size={25} />

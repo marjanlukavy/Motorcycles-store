@@ -39,7 +39,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="flex flex-col space-y-1 mb-4">
         <div className="flex items-center">
           <span className="font-medium">Colors:</span>
-          <div className="flex ml-2 gap-1">
+          <div className="flex ml-2 gap-1 flex-wrao">
             {product?.colors?.map((color: string, index: number) => (
               <span
                 key={index}
@@ -51,7 +51,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
         <div className="flex items-center">
           <span className="font-medium">Sizes:</span>
-          <div className="flex ml-2 gap-1">
+          <div className="flex ml-2 gap-1 flex-wrap">
             {product?.sizes?.map((size: string, index: number) => (
               <span
                 key={index}

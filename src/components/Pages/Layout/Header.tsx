@@ -32,7 +32,7 @@ const Header = () => {
           name: user.displayName,
           email: user.email,
           profilePicture: user.photoURL,
-          admin: user.admin, // Ensure admin status is stored in state
+          admin: user.admin,
         });
       }
     } catch (error) {
