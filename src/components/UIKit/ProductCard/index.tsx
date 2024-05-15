@@ -20,20 +20,20 @@ const ProductCard = ({ product }: { product: Product }) => {
     <div className="bg-white flex flex-col rounded-xl shadow-sm hover:shadow-md p-5 transition-shadow duration-300">
       <div className="relative h-48 w-full mb-4 rounded-lg overflow-hidden">
         <Image
-          src={product.imageUrl}
-          alt={product.title}
+          src={product?.imageUrl}
+          alt={product?.title}
           layout="fill"
           objectFit="cover"
           className="rounded-lg"
         />
       </div>
       <h3 className="text-xl font-semibold text-gray-900 mb-2">
-        {product.title}
+        {product?.title}
       </h3>
       <div className="text-gray-700 mb-3">
         <span className="font-medium">Price:</span>{" "}
         <span className="text-lg font-semibold text-gray-900">
-          ${product.price}
+          ${product?.price}
         </span>
       </div>
       <div className="flex flex-col space-y-1 mb-4">

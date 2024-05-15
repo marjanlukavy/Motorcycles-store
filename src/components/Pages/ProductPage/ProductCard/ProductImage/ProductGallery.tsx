@@ -15,7 +15,7 @@ const ProductGallery = ({ product }: { product: Product }) => {
         <div className="flex items-center justify-center bg-white md:bg-transparent md2:bg-white md2:px-1 relative rounded-lg">
           <div className="relative w-[1100px] h-[500px]">
             <Image
-              src={product.imageUrl}
+              src={product?.imageUrl}
               alt={product.title}
               fill
               className="rounded-lg object-cover"
