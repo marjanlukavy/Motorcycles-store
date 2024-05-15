@@ -103,6 +103,7 @@ const Catalog = () => {
   const resetFilters = () => {
     setSelectedColor(null);
     setPriceRange({ min: 0, max: Infinity });
+    router.push(router.pathname, undefined, { shallow: true });
   };
 
   return (
