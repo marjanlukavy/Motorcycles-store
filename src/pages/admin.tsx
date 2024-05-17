@@ -6,12 +6,12 @@ import EditProducts from "@/components/Pages/Profile/EditProducts";
 
 const AdminPage = () => {
   return (
-    <div className="py-10 min-h-screen">
-      <Tabs defaultValue="account" className="w-[1000px] mx-auto">
+    <div className="py-10 min-h-screen px-4">
+      <Tabs defaultValue="account" className=" mx-auto">
         <TabsList>
-          <TabsTrigger value="create">Create Product</TabsTrigger>
-          <TabsTrigger value="manage">Manage Products</TabsTrigger>
-          <TabsTrigger value="edit">Edit Products</TabsTrigger>
+          <TabsTrigger value="create">Create</TabsTrigger>
+          <TabsTrigger value="manage">Manage</TabsTrigger>
+          <TabsTrigger value="edit">Edit</TabsTrigger>
         </TabsList>
         <TabsContent value="create">
           <CreateProduct />

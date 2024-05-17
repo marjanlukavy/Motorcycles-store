@@ -112,7 +112,7 @@ const Catalog = () => {
       <SubCategories />
       <button
         onClick={resetFilters}
-        className="self-end bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 mb-4"
+        className="self-end bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300 mb-4 sm:mr-4"
       >
         Reset Filters
       </button>

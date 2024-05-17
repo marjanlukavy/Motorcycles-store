@@ -76,9 +76,9 @@ const Profile = () => {
                 key={order.id}
                 className="border p-8 rounded-xl shadow-lg bg-[#f7fafc] hover:bg-[#edf2f7] transition-all duration-300"
               >
-                <div className="flex justify-between items-start mb-6">
+                <div className="flex justify-between items-start mb-6 sm:flex-wrap">
                   <div>
-                    <p className="text-xl font-semibold text-[#1a202c]">
+                    <p className="text-xl font-semibold sm:text-[15px] text-[#1a202c]">
                       Order ID: {order.id}
                     </p>
                     <p className="text-[#4a5568]">Phone: {order.phoneNumber}</p>
@@ -88,7 +88,6 @@ const Profile = () => {
                         "bg-[#e2e8f0] text-[#2d3748]"
                       } rounded-full px-3 py-1 mt-3 inline-block`}
                     >
-                      Status:{" "}
                       {order.status === "waiting"
                         ? "Очікування продавця"
                         : order.status === "pending"

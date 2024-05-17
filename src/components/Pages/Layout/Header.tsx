@@ -6,12 +6,13 @@ import useUser from "@/store/user.store";
 import { signInWithGoogle, logOut } from "@/utils/firebase/config";
 import ShoppingCart from "@/components/UIKit/ShoppingCart";
 import { RiAdminFill } from "react-icons/ri";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Header = () => {
   const { user, setUser, removeUser } = useUser();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-  console.log(user);
 
   useEffect(() => {
     setIsMounted(true);
@@ -61,6 +62,7 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-sm py-4">
+      <ToastContainer />
       <div className="w-full flex justify-between items-center px-6 sm:flex-col sm:gap-4">
         <Link className="flex items-center" href="/">
           <Image

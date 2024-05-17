@@ -142,7 +142,7 @@ const CreateProduct = () => {
         </h2>
 
         <div className="grid grid-cols-2 gap-6">
-          <div>
+          <div className="flex flex-col justify-between">
             <label className="block text-lg font-medium text-black mb-2">
               Category
             </label>

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   Drawer,
   DrawerClose,
@@ -17,6 +15,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/utils/firebase/config";
 import { RxCrossCircled } from "react-icons/rx";
 import useUser from "@/store/user.store";
+import { useToast } from "@/providers/ToastProvider";
 
 const ShoppingCart = () => {
   const { items, incrementItem, decrementItem, removeItem, clearCart } =
@@ -29,6 +28,7 @@ const ShoppingCart = () => {
     }));
 
   const user = useUser((state) => state.user);
+  const showToast = useToast();
 
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
@@ -36,7 +36,7 @@ const ShoppingCart = () => {
 
   const handleCheckout = () => {
     if (!user) {
-      toast.error("Please sign in to checkout.");
+      showToast("Please sign in to checkout.", { type: "error" });
       return;
     }
     setShowForm(true);
@@ -54,21 +54,23 @@ const ShoppingCart = () => {
         createdAt: new Date(),
         status: "pending",
       };
-      toast.success("Очікуйте, з вами скоро зв'яжаться!", { autoClose: 1000 });
       await addDoc(collection(db, "orders"), order);
       clearCart();
       setShowForm(false);
+      showToast("Очікуйте, з вами скоро зв'яжаться!", {
+        type: "success",
+        autoClose: 1000,
+      });
     } catch (error) {
       console.error("Error adding order: ", error);
-      toast.error("Failed to place the order. Please try again.");
+      showToast("Failed to place the order. Please try again.", {
+        type: "error",
+      });
     }
   };
 
-  // if (items.length === 0) return null;
-
   return (
     <Drawer>
-      <ToastContainer />
       <DrawerTrigger className="relative text-black px-4 py-2 flex items-center rounded-lg hover:bg-blue-600 transition duration-300">
         <FiShoppingCart size={25} />
         {items.length > 0 && (
